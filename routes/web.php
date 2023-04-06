@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Mail\MensagemTesteMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,4 +23,10 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 // Route::resource('tarefa', 'App\Http\Controllers\TarefaController')->middleware('auth');
 Route::resource('tarefa', 'App\Http\Controllers\TarefaController');
+
+Route::get('mensagem-teste', function(){
+    return new MensagemTesteMail();
+    // Mail::to('pedro.miguel.bs@gmail.com')->send(new MensagemTesteMail());
+    // return 'Mensagem enviada com sucesso';
+});
 
