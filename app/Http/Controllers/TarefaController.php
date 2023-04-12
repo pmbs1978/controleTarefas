@@ -33,10 +33,12 @@ class TarefaController extends Controller
         // } else{
         //     return 'Você não está logado!';
         // }
-        $id = Auth::user()->id;
-        $nome = Auth::user()->name;
-        $email = Auth::user()->email;
-        return "ID: $id | NOME: $nome | EMAIL: $email";
+        // $id = Auth::user()->id;
+        // $nome = Auth::user()->name;
+        // $email = Auth::user()->email;
+        // return "ID: $id | NOME: $nome | EMAIL: $email";
+        $tarefas = Tarefa::all();
+        return view('tarefa.index', compact('tarefas'));
     }
 
     /**
@@ -44,7 +46,7 @@ class TarefaController extends Controller
      */
     public function create()
     {
-        //
+        return view('tarefa.create');
     }
 
     /**
@@ -52,7 +54,23 @@ class TarefaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $regras = [
+            'tarefa' => 'required|min:5|max:200',
+            'data_limite_conclusao' => 'date'
+        ];
+
+        $feedback = [
+            'tarefa.required' => 'O campo :attribute tem de ser preenchido',
+            'tarefa.min' => 'O campo :attribute tem de ter pelo menos 5 caracteres',
+            'tarefa.max' => 'O campo :attribute tem de ter no máximo 200 caracteres',
+            'date' => 'A data não está no formato correcto'
+        ];
+
+        $request->validate($regras, $feedback);
+
+        $tarefa = Tarefa::create($request->all());
+
+        return redirect()->route('tarefa.show', ['tarefa' => $tarefa->id]);
     }
 
     /**
@@ -60,7 +78,7 @@ class TarefaController extends Controller
      */
     public function show(Tarefa $tarefa)
     {
-        //
+        dd($tarefa);
     }
 
     /**
