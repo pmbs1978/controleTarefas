@@ -8,17 +8,24 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Tarefa;
 
 class NovaTarefaMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $tarefa;
+    public $data_limite_conclusao;
+    public $url;
+
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(Tarefa $tarefa)
     {
-        //
+        $this->tarefa = $tarefa->tarefa;
+        $this->data_limite_conclusao = date('d/m/Y', strtotime($tarefa->data_limite_conclusao));
+        $this->url = "http://89.38.150.159/tarefa/$tarefa->id";
     }
 
     /**
@@ -27,7 +34,7 @@ class NovaTarefaMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Nova Tarefa Mail',
+            subject: 'Nova Tarefa Criada',
         );
     }
 

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Mail;
 use App\Models\Tarefa;
+use App\Mail\NovaTarefaMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +17,7 @@ class TarefaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // if(Auth::check()){
         //     $id = Auth::user()->id;
@@ -37,8 +39,11 @@ class TarefaController extends Controller
         // $nome = Auth::user()->name;
         // $email = Auth::user()->email;
         // return "ID: $id | NOME: $nome | EMAIL: $email";
-        $tarefas = Tarefa::all();
-        return view('tarefa.index', compact('tarefas'));
+        $user = auth()->user()->id;
+        $tarefas = Tarefa::where('user_id', null)->paginate(10);
+
+        $request = $request->all();
+        return view('tarefa.index', compact('tarefas', 'request'));
     }
 
     /**
@@ -68,7 +73,13 @@ class TarefaController extends Controller
 
         $request->validate($regras, $feedback);
 
-        $tarefa = Tarefa::create($request->all());
+        $dados = $request->all();
+        $dados['user_id'] = auth()->user()->id;
+
+        $tarefa = Tarefa::create($dados);
+
+        $destinatario = auth()->user()->email;
+        Mail::to($destinatario)->send(new NovaTarefaMail($tarefa));
 
         return redirect()->route('tarefa.show', ['tarefa' => $tarefa->id]);
     }
@@ -78,7 +89,8 @@ class TarefaController extends Controller
      */
     public function show(Tarefa $tarefa)
     {
-        dd($tarefa);
+        $tarefa = $tarefa;
+        return view('tarefa.show', ['tarefa' => $tarefa]);
     }
 
     /**
@@ -86,7 +98,7 @@ class TarefaController extends Controller
      */
     public function edit(Tarefa $tarefa)
     {
-        //
+        return 'chegamos aqui';
     }
 
     /**
