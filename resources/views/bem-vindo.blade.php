@@ -78,7 +78,26 @@
         </nav>
 
         <main class="py-4">
-            @yield('content')
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h1>Site da aplicação</h1>
+                        @auth()
+                            <h3>Está autenticado</h3>
+                            <p>{{Auth::user()->id}}</p>
+                            <p>{{Auth::user()->name}}</p>
+                            <p>{{Auth::user()->email}}</p>
+                            @php
+                                phpinfo();
+                            @endphp
+                        @endauth
+                        @guest()
+                            <h3>Não está autenticado</h3>
+                        @endguest
+                    </div>
+                </div>
+
+            </div>
         </main>
     </div>
 </body>

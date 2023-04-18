@@ -11,6 +11,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\RedefenirSenhaNotification;
 use App\Notifications\VerificaEmailNotification;
 
+use App\Models\Tarefa;
+
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -51,5 +53,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function sendEmailVerificationNotification(){
         $this->notify(new VerificaEmailNotification($this->name));
+    }
+
+    public function tarefas(){
+        return $this->hasMany(Tarefa::class, 'user_id', 'id');
     }
 }

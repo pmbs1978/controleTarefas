@@ -15,15 +15,18 @@ use App\Mail\MensagemTesteMail;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('bem-vindo');
 });
 
 Auth::routes(['verify' => true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('verified');
 // Route::resource('tarefa', 'App\Http\Controllers\TarefaController')->middleware('auth');
+Route::get('tarefa/exportar', [App\Http\Controllers\TarefaController::class, 'exportar'])->name('tarefa.exportar')->middleware('verified');
+// importante tem de estar antes de resouce
 Route::resource('tarefa', 'App\Http\Controllers\TarefaController')->middleware('verified');
 Route::resource('account', 'App\Http\Controllers\AccountController')->middleware('verified');
+
 
 Route::get('mensagem-teste', function(){
     return new MensagemTesteMail();

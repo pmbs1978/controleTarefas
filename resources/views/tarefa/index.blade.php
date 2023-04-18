@@ -4,11 +4,22 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="d-flex justify-content-end">
-                    <a class="link-success text-decoration-none" href="{{ route('tarefa.create') }}">Nova Tarefa</a>
-                </div>
                 <div class="card">
-                    <div class="card-header">Lista tarefas</div>
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-6">
+                                <h3 class="m-2">Lista tarefas</h3>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex justify-content-end">
+                                    <a href="{{ route('tarefa.create') }}"><i class="bi bi-file-earmark-plus fs-2 text-primary m-2"></i></a>
+                                    <a href="{{ route('tarefa.exportar') }}" target="_blank"><i class="bi bi-filetype-pdf fs-2 text-primary m-2"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
 
                     <div class="card-body">
                         <table class="table table-striped">
@@ -19,6 +30,7 @@
                                     <th scope="col">Data criação</th>
                                     <th scope="col">Data modificação</th>
                                     <th scope="col">Data limite conclusão</th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -32,6 +44,13 @@
                                         <td>{{$tarefa->data_limite_conclusao}}</td>
                                         <td>
                                             <a href="{{ route('tarefa.edit', $tarefa->id) }}"><i class="bi bi-pencil-square fs-4 text-primary"></i></a>
+                                        </td>
+                                        <td>
+                                            <form id="form_{{$tarefa->id}}" action="{{route('tarefa.destroy', ['tarefa' => $tarefa->id])}}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                            <a href="#" onclick="document.getElementById('form_{{$tarefa->id}}').submit()"><i class="bi bi-trash3 fs-4 text-danger"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

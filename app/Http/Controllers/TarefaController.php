@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Mail;
 use App\Models\Tarefa;
 use App\Mail\NovaTarefaMail;
+use App\Mail\TarefaAtualizadaMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TarefaController extends Controller
 {
@@ -40,7 +42,7 @@ class TarefaController extends Controller
         // $email = Auth::user()->email;
         // return "ID: $id | NOME: $nome | EMAIL: $email";
         $user = auth()->user()->id;
-        $tarefas = Tarefa::where('user_id', null)->paginate(10);
+        $tarefas = Tarefa::where('user_id', $user)->paginate(10);
 
         $request = $request->all();
         return view('tarefa.index', compact('tarefas', 'request'));
@@ -98,7 +100,11 @@ class TarefaController extends Controller
      */
     public function edit(Tarefa $tarefa)
     {
-        return 'chegamos aqui';
+        $user = auth()->user()->id;
+        if($tarefa->user_id == $user){
+            return view('tarefa.edit', ['tarefa' => $tarefa]);
+        }
+        return view('acesso-negado');
     }
 
     /**
@@ -106,7 +112,29 @@ class TarefaController extends Controller
      */
     public function update(Request $request, Tarefa $tarefa)
     {
-        //
+        $user = auth()->user()->id;
+        if($tarefa->user_id == $user){
+            $regras = [
+                'tarefa' => 'required|min:5|max:200',
+                'data_limite_conclusao' => 'date'
+            ];
+
+            $feedback = [
+                'tarefa.required' => 'O campo :attribute tem de ser preenchido',
+                'tarefa.min' => 'O campo :attribute tem de ter pelo menos 5 caracteres',
+                'tarefa.max' => 'O campo :attribute tem de ter no máximo 200 caracteres',
+                'date' => 'A data não está no formato correcto'
+            ];
+
+            $request->validate($regras, $feedback);
+            $tarefa->update($request->all());
+
+            $destinatario = auth()->user()->email;
+            Mail::to($destinatario)->send(new TarefaAtualizadaMail($tarefa));
+
+            return redirect()->route('tarefa.index');
+        }
+        return view('acesso-negado');
     }
 
     /**
@@ -114,6 +142,25 @@ class TarefaController extends Controller
      */
     public function destroy(Tarefa $tarefa)
     {
-        //
+        $user = auth()->user()->id;
+        if(!$tarefa->user_id == $user){
+            return view('acesso-negado');
+        }
+
+        $tarefa->delete();
+        return redirect()->route('tarefa.index');
+    }
+
+    public function exportar()
+    {
+
+        $tarefas = auth()->user()->tarefas()->get();
+        $pdf = Pdf::loadView('tarefa.pdf', ['tarefas' => $tarefas]);
+        $pdf->setPaper('a4', 'landscape');
+        // primeiro parâmetro tipo de papel a4, a5, etc...
+        // segundo parâmetro orientação portrait, landscape
+
+        // return $pdf->download('lista_de_tarefas.pdf');
+        return $pdf->stream('lista_de_tarefas.pdf');
     }
 }
