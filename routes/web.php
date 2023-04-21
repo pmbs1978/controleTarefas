@@ -21,6 +21,8 @@ Route::get('/', function () {
 Auth::routes(['verify' => true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('verified');
+Route::get('tarefa/export/{extensao}', [App\Http\Controllers\TarefaController::class, 'export'])->name('tarefa.export')->middleware('verified');
+Route::get('tarefa/exportcsv', [App\Http\Controllers\TarefaController::class, 'exportcsv'])->name('tarefa.export-csv')->middleware('verified');
 // Route::resource('tarefa', 'App\Http\Controllers\TarefaController')->middleware('auth');
 Route::get('tarefa/exportar', [App\Http\Controllers\TarefaController::class, 'exportar'])->name('tarefa.exportar')->middleware('verified');
 // importante tem de estar antes de resouce

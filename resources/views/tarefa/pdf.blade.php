@@ -32,6 +32,7 @@
         <thead>
             <tr>
                 <th>#</th>
+                <th>USER</th>
                 <th>Tarefa</th>
                 <th>Data criação</th>
                 <th>Data modificação</th>
@@ -42,6 +43,7 @@
             @foreach ($tarefas as $tarefa)
                 <tr>
                     <th scope="row">{{$tarefa->id}}</th>
+                    <th>{{ $tarefa->user->name }}</th>
                     <td>{{$tarefa->tarefa}}</td>
                     <td>{{$tarefa->created_at}}</td>
                     <td>{{$tarefa->updated_at}}</td>

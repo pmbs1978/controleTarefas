@@ -6,9 +6,11 @@ use Mail;
 use App\Models\Tarefa;
 use App\Mail\NovaTarefaMail;
 use App\Mail\TarefaAtualizadaMail;
+use App\Exports\TarefasExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TarefaController extends Controller
 {
@@ -149,6 +151,16 @@ class TarefaController extends Controller
 
         $tarefa->delete();
         return redirect()->route('tarefa.index');
+    }
+
+    public function export($extensao){
+        // if($extensao != 'xlsx' && $extensao != 'csv' && $extensao != 'pdf') {
+        //     return redirect()->route('tarefa.index');
+        // }
+        if(!in_array($extensao, ['xlsx', 'csv', 'pdf'])){
+            return redirect()->route('tarefa.index');
+        }
+        return Excel::download(new TarefasExport, 'tarefas.'.$extensao);
     }
 
     public function exportar()

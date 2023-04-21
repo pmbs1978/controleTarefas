@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 use App\Models\User;
 
 class Tarefa extends Model
@@ -14,5 +13,9 @@ class Tarefa extends Model
 
     public function user() {
         return $this->beLongsTo(User::class);
+    }
+
+    public function tarefas(){
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

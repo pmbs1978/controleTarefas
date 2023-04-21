@@ -13,7 +13,10 @@
                             <div class="col-6">
                                 <div class="d-flex justify-content-end">
                                     <a href="{{ route('tarefa.create') }}"><i class="bi bi-file-earmark-plus fs-2 text-primary m-2"></i></a>
-                                    <a href="{{ route('tarefa.exportar') }}" target="_blank"><i class="bi bi-filetype-pdf fs-2 text-primary m-2"></i></a>
+                                    <a href="{{ route('tarefa.export', ['extensao' => 'xlsx']) }}" target="_blank"><i class="bi bi-filetype-xlsx fs-2 text-primary m-2"></i></a>
+                                    <a href="{{ route('tarefa.export', ['extensao' => 'csv']) }}" target="_blank"><i class="bi bi-filetype-csv fs-2 text-primary m-2"></i></a>
+                                    <a href="{{ route('tarefa.export', ['extensao' => 'pdf']) }}" target="_blank"><i class="bi bi-filetype-pdf fs-2 text-primary m-2"></i></a>
+                                    <a href="{{ route('tarefa.exportar') }}" target="_blank"><i class="bi bi-file-earmark-pdf fs-2 text-primary m-2"></i></a>
                                 </div>
                             </div>
                         </div>
